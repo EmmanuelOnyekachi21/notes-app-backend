@@ -42,3 +42,24 @@ python manage.py migrate
 ```bash
 python manage.py runserver
 ```
+
+## Linting Script
+
+This project includes a helper script `check_style.sh` which scans Python files for style issues using `pycodestyle`.
+
+### How it works
+- The script searches the provided directory for `.py` files.
+- Each file is checked with `pycodestyle`.
+- If errors are found, the file is opened in VS Code for correction.
+- You can choose to skip files interactively.
+
+### Error log file
+During the process, linter errors are written to a temporary file:
+
+- **Default name**: `/tmp/pycodestyle_errors.txt`
+- The file is automatically deleted when the script exits.
+- If the script is interrupted, the file can be safely removed manually:
+  ```bash
+  rm -f py_errors.txt
+  ```
+
