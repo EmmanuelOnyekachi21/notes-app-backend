@@ -59,14 +59,25 @@ class NoteSerializer(serializers.ModelSerializer):
             read_only_fields (list): Fields that are read-only and\
                 cannot be modified through the serializer.
         """
+        color = serializers.SerializerMethodField()
         model = Note
         fields = [
             'id', 'title', 'category', 'category_display', 'slug', 'created',
-            'updated', 'body'
+            'updated', 'body', 'color'
         ]
         read_only_fields = [
             "slug", "created", "updated"
         ]
+        
+    def get_color(obj):
+        """
+        Get the color associated with the note's category.
+        Args:
+            obj (Note): The Note instance.
+        Returns:
+            str: The color corresponding to the note's category.
+        """
+        return obj.color
 
 
 class NoteWriteSerializer(serializers.ModelSerializer):

@@ -32,6 +32,14 @@ class Note(models.Model):
         ('WORK', 'Work'),
         ('IMPORTANT', 'Important')
     )
+    category_colors = {
+        "BUSINESS": "navy",
+        "PERSONAL": "teal",
+        "HEALTH": "green",
+        "STUDY": "blue",
+        "WORK": "orange",
+        "IMPORTANT": "red",
+    }
     title = models.CharField(max_length=200)
     body = models.TextField()
     slug = models.SlugField(unique=True, null=True, blank=True)
@@ -40,13 +48,17 @@ class Note(models.Model):
     )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    
+    @property
+    def color(self):
+        return self.category_colors[self.category]
 
     class Meta:
         """
         Meta:
         ordering (list): Orders notes by the 'updated' field.
         """
-        ordering = ['updated']
+        ordering = ['-updated']
 
     def __str__(self):
         """

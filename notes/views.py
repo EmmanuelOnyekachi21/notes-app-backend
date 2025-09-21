@@ -18,6 +18,21 @@ from notes.models import Note
 from notes.serializers import NoteSerializer, NoteWriteSerializer
 
 
+@api_view(['GET'])
+def categorys(request):
+    """
+    List all available note categories.
+    """
+    categories = [
+        {
+            "value": category[0],
+            "label": category[1]
+        }
+        for category in Note.CATEGORY_CHOICES
+    ]
+    return Response(categories, status=status.HTTP_200_OK)
+
+
 @api_view(['GET', 'POST'])
 def note_list(request):
     """
