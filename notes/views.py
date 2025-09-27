@@ -86,23 +86,46 @@ def note_detail(request, slug):
         serializer = NoteSerializer(note)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        serializer = NoteWriteSerializer(note, data=request.data)
-        if serializer.is_valid():
-            updated_note = serializer.save()
-            update_serializer = NoteSerializer(updated_note)
-            return Response(update_serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # elif request.method == 'PUT':
+    #     serializer = NoteWriteSerializer(note, data=request.data)
+    #     if serializer.is_valid():
+    #         updated_note = serializer.save()
+    #         update_serializer = NoteSerializer(updated_note)
+    #         return Response(update_serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'PATCH':
-        serializer = NoteWriteSerializer(note, data=request.data, partial=True)
+    # elif request.method == 'PATCH':
+    #     serializer = NoteWriteSerializer(note, data=request.data, partial=True)
+    #     if serializer.is_valid():
+    #         updated_note = serializer.save()
+    #         update_serializer = NoteSerializer(updated_note)
+    #         return Response(update_serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method in ['PUT', 'PATCH']:
+        partial = request.method == 'PATCH'
+        serializer = NoteWriteSerializer(note, data=request.data, partial=partial)
         if serializer.is_valid():
             updated_note = serializer.save()
             update_serializer = NoteSerializer(updated_note)
             return Response(update_serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
 
     elif request.method == 'DELETE':
         title = note.title
         note.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+def create_note(request):
+    note_serializer = NoteWriteSerializer(data=request.data)
+    if note_serializer.is_valid():
+        note_instance = note_serializer.save()
+        note_instance_serializer = NoteSerializer(note_instance)
+        return Response(
+            note_instance_serializer.data,
+            status=status.HTTP_201_CREATED
+        )
+    return Response(note_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
